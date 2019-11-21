@@ -1,0 +1,48 @@
+- name: Configure BGP Redistribution Rule
+  hosts: paloalto-vm
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+    - name: Grab the credentials from ansible-vault
+      include_vars: 'firewall-secrets.yml'
+      no_log: 'yes'
+
+    - name: BGP use Redistribution Policy Default_to_VPC
+      panos_bgp_redistribute:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Default_to_VPC'
+       enable: true
+       commit: false
+       address_family_identifier: ipv4
+       set_origin: incomplete
+       vr_name: default
+
+    - name: BGP use Redistribution Policy Export_to_AWS Subnet01
+      panos_bgp_redistribute:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Export_to_AWS01'
+       enable: true
+       commit: false
+       address_family_identifier: ipv4
+       set_origin: incomplete
+       vr_name: default
+
+    - name: BGP use Redistribution Policy Export_to_AWS Subnet02
+      panos_bgp_redistribute:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Export_to_AWS02'
+       enable: true
+       commit: false
+       address_family_identifier: ipv4
+       set_origin: incomplete
+       vr_name: default

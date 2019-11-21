@@ -1,0 +1,67 @@
+- name: Configure BGP Peer Group
+  hosts: paloalto-vm
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+    - name: Grab the credentials from ansible-vault
+      include_vars: 'firewall-secrets.yml'
+      no_log: 'yes'
+
+    - name: Configure BGP Peer Group
+      panos_bgp_peer_group:
+        ip_address: '{{ ip_address }}'
+        username: '{{ username }}'
+        password: '{{ password }}'
+        state: present
+        name: AWS-BGP-PG
+        vr_name: default
+        aggregated_confed_as_path: true
+        enable: true
+        export_nexthop: resolve
+        import_nexthop: original
+        remove_private_as: true
+        type: ebgp
+        soft_reset_with_stored_info: false
+        commit: false
+
+    - name: Configure BGP Peer - Tunnel#1
+      panos_bgp_peer:
+        ip_address: '{{ ip_address }}'
+        username: '{{ username }}'
+        password: '{{ password }}'
+        state: present
+        name: tunnel.1
+        enable: true
+        peer_as: '64512'
+        local_interface: 'tunnel.1'
+        local_interface_ip: '169.xxx.xx.1/30'
+        peer_address_ip: '169.xxx.xx.2'
+        peer_group: AWS-BGP-PG
+        vr_name: default
+        reflector_client: non-client
+        connection_keep_alive_interval: '10'
+        connection_hold_time: '30'
+        commit: false
+
+    - name: Configure BGP Peer - Tunnel#2
+      panos_bgp_peer:
+        ip_address: '{{ ip_address }}'
+        username: '{{ username }}'
+        password: '{{ password }}'
+        state: present
+        name: tunnel.2
+        enable: true
+        peer_as: '64512'
+        local_interface: 'tunnel.2
+        local_interface_ip: '169.xxx.xx.5/30'  
+        peer_address_ip: '169.xxx.xx.6'
+        peer_group: AWS-BGP-PG
+        vr_name: default
+        reflector_client: non-client
+        connection_keep_alive_interval: '10'
+        connection_hold_time: '30'
+        commit: false

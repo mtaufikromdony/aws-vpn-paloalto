@@ -108,3 +108,29 @@
       dead_peer_detection_interval: '10'
       dead_peer_detection_retry: '3'
       commit: False
+
+  - name: Add IPSec tunnel to IKE gateway profile - Tunnel#1
+    panos_ipsec_tunnel:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      type: 'auto-key'
+      name: 'ID-JKT-AWS-Tunnel01'
+      tunnel_interface: 'tunnel.1'
+      ike_gtw_name: 'AWS-IKEGW01'
+      ipsec_profile: 'AWS-IPSEC-CRYPTO'
+      commit: 'False'
+
+  - name: Add IPSec tunnel to IKE gateway profile - Tunnel#2
+    panos_ipsec_tunnel:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      type: 'auto-key'
+      name: 'ID-JKT-AWS-Tunnel02'
+      tunnel_interface: 'tunnel.2'
+      ike_gtw_name: 'AWS-IKEGW02'
+      ipsec_profile: 'AWS-IPSEC-CRYPTO'
+      commit: 'False'

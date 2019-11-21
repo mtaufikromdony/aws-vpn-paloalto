@@ -66,3 +66,45 @@
       dhgroup: 'group2'
       lifetime_seconds: '3600'
       commit: 'False'
+
+  - name: Add IKE gateway config - Gateway#1
+    panos_ike_gateway:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      name: 'AWS-IKEGW01'
+      version: 'ikev1'
+      interface: 'ethernet1/1'
+      local_ip_address: '111.xxx.xxx.18/24'
+      local_ip_address_type: 'ip'
+      ikev1_crypto_profile: 'AWS-IKE-Crypto'
+      ikev1_exchange_mode: 'main'
+      peer_ip_value: '3.x.xx.xxx'
+      pre_shared_key: 'PLEASECHANGEME-PRESHAREDKEY'
+      enable_passive_mode: 'False'
+      enable_dead_peer_detection: 'True'
+      dead_peer_detection_interval: '10' 
+      dead_peer_detection_retry: '3'
+      commit: False
+
+  - name: Add IKE gateway config - Gateway#2
+    panos_ike_gateway:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      name: 'AWS-IKEGW02'
+      version: 'ikev1'
+      interface: 'ethernet1/1'
+      local_ip_address: '111.xxx.xxx.18/24'
+      local_ip_address_type: 'ip'
+      ikev1_crypto_profile: 'AWS-IKE-Crypto'
+      ikev1_exchange_mode: 'main'
+      peer_ip_value: '52.xx.xx.xxx'
+      pre_shared_key: 'PLEASECHANGEME-PRESHAREDKEY'
+      enable_passive_mode: 'False'
+      enable_dead_peer_detection: 'True'
+      dead_peer_detection_interval: '10'
+      dead_peer_detection_retry: '3'
+      commit: False

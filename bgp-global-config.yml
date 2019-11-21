@@ -1,0 +1,26 @@
+- name: BGP Global Config
+  hosts: paloalto-vm
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - name: Grab the credentials from ansible-vault
+    include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Configure BGP on a Virtual Router
+    panos_bgp:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: present
+      vr_name: default
+      router_id: '1.1.1.1'
+      local_as: '65000'
+      install_route: true
+      allow_redist_default_route: true
+      enable: true
+      commit: true

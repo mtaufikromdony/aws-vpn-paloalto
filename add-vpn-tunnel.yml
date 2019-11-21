@@ -40,3 +40,16 @@
       comment: 'IPSec connection to AWS - BGP Tunnel#2'
       management_profile: 'ping-only'
       commit: 'False'
+
+  - name: Add IKE crypto config to the firewall
+    panos_ike_crypto_profile:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      name: 'AWS-IKE-Crypto'
+      dhgroup: 'group2'
+      authentication: 'sha1'
+      encryption: 'aes-128-cbc'
+      lifetime_sec: '28800'
+      commit: 'False'

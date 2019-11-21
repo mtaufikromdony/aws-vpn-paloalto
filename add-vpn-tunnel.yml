@@ -1,0 +1,42 @@
+- name: AWS VPN Site to Site creation
+  hosts: paloalto-vm
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - name: Grab the credentials from ansible-vault
+    include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Create tunnel interface for AWS tunnel.1 169.xxx.xxx.1/30 mtu 1427
+    panos_tunnel:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      if_name: tunnel.1
+      ip: 169.xxx.xxx.1/30
+      vr_name: 'default'
+      zone_name: 'AWS_IPSec_Zones'
+      mtu: '1427'
+      comment: 'IPSec connection to AWS - BGP Tunnel#1'
+      management_profile: 'ping-only'
+      commit: 'False'
+
+  - name: Create tunnel interface for AWS tunnel.2 169.xxx.xxx.5/30 mtu 1427
+    panos_tunnel:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      state: 'present'
+      if_name: tunnel.2
+      ip: 169.xxx.xxx.5/30
+      vr_name: 'default'
+      zone_name: 'AWS_IPSec_Zones'
+      mtu: '1427'
+      comment: 'IPSec connection to AWS - BGP Tunnel#2'
+      management_profile: 'ping-only'
+      commit: 'False'

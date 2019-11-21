@@ -1,0 +1,51 @@
+- name: Configure BGP Redistribution Profile
+  hosts: paloalto-vm
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+    - name: Grab the credentials from ansible-vault
+      include_vars: 'firewall-secrets.yml'
+      no_log: 'yes'
+
+    - name: BGP use Redistribution Profile Default_to_VPC
+      panos_redistribution:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Default_to_VPC'
+       priority: '10'
+       action: 'redist'
+       filter_type: 'static'
+       filter_destination: '10.0.0.0/16'
+       vr_name: 'default'
+       commit: 'False'
+
+    - name: BGP use Redistribution Profile Export_to_AWS_Subnet01
+      panos_redistribution:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Export_to_AWS01'
+       priority: '2'
+       action: 'redist'
+       filter_type: 'ospf'
+       filter_destination: '192.168.0.0/24'
+       vr_name: 'default'
+       commit: 'False'
+
+    - name: BGP use Redistribution Profile Export_to_AWS_Subnet02
+      panos_redistribution:
+       ip_address: '{{ ip_address }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       name: 'Export_to_AWS02'
+       priority: '2'
+       action: 'redist'
+       filter_type: 'ospf'
+       filter_destination: '172.16.0.0/16'
+       vr_name: 'default'
+       commit: 'False'
